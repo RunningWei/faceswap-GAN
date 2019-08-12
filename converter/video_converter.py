@@ -170,9 +170,14 @@ class VideoConverter(object):
                 rev_aligned_det_face_im_rgb = landmarks_match_mtcnn(r_rgb, tar_landmarks, src_landmarks)
                 rev_aligned_mask = landmarks_match_mtcnn(r_a, tar_landmarks, src_landmarks)
 
+                # if the result is not obvious, try strengthen the mask
+                strengthen_rev_aligned_mask = rev_aligned_mask/255.
+                if options["roi_coverage"] is not None:
+                    for k in range(options["roi_coverage"]):
+                        strengthen_rev_aligned_mask = np.sqrt(rev_aligned_mask)
                 # merge source face and transformed face
                 result = np.zeros_like(det_face_im)
-                result = rev_aligned_mask/255*rev_aligned_det_face_im_rgb + (1-rev_aligned_mask/255)*det_face_im
+                result = strengthen_rev_aligned_mask*rev_aligned_det_face_im_rgb + (1-strengthen_rev_aligned_mask)*det_face_im
                 result_a = rev_aligned_mask
             except:            
                 # catch exceptions for landmarks alignment errors (if any)
@@ -232,3 +237,5 @@ class VideoConverter(object):
         if options["output_type"] not in range(1,4):
             ot = options["output_type"]
             raise ValueError(f"Received an unknown output_type option: {ot}.")
+        if options["mask_strengthen"] not in [None]+list(range(4)):
+            raise ValueError(f"mask_strengthen should be between 0 and 4, or None.")
