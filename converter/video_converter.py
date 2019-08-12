@@ -174,7 +174,7 @@ class VideoConverter(object):
                 strengthen_rev_aligned_mask = rev_aligned_mask/255.
                 if options["mask_strengthen"] is not None:
                     for k in range(options["mask_strengthen"]):
-                        strengthen_rev_aligned_mask = np.sqrt(rev_aligned_mask)
+                        strengthen_rev_aligned_mask = np.sqrt(strengthen_rev_aligned_mask)
                 # merge source face and transformed face
                 result = np.zeros_like(det_face_im)
                 result = strengthen_rev_aligned_mask*rev_aligned_det_face_im_rgb + (1-strengthen_rev_aligned_mask)*det_face_im
