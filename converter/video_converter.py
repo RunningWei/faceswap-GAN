@@ -172,8 +172,8 @@ class VideoConverter(object):
 
                 # if the result is not obvious, try strengthen the mask
                 strengthen_rev_aligned_mask = rev_aligned_mask/255.
-                if options["roi_coverage"] is not None:
-                    for k in range(options["roi_coverage"]):
+                if options["mask_strengthen"] is not None:
+                    for k in range(options["mask_strengthen"]):
                         strengthen_rev_aligned_mask = np.sqrt(rev_aligned_mask)
                 # merge source face and transformed face
                 result = np.zeros_like(det_face_im)
