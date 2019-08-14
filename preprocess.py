@@ -49,11 +49,14 @@ def process_image(input_img, info, detector, save_interval, save_path):
         
     return np.zeros((3,3,3))
 
-def preprocess_video(fn_input_video, fd, save_interval, save_path):
+def preprocess_video(fn_input_video, fd, save_interval, save_path, duration=None):
     info = VideoInfo()
     output = 'dummy.mp4'
     clip1 = VideoFileClip(fn_input_video)
-    clip = clip1.fl_image(lambda img: process_image(img, info, fd, save_interval, save_path))
+    if type(duration) is tuple:
+        clip = clip1.subclip(duration[0], duration[1]).fl_image(lambda img: process_image(img, info, fd, save_interval, save_path))
+    else:
+        clip = clip1.fl_image(lambda img: process_image(img, info, fd, save_interval, save_path))
     clip.write_videofile(output, audio=False, verbose=False)
     clip1.reader.close()
 
